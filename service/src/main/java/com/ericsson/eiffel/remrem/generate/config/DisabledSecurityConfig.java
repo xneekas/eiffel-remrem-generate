@@ -14,36 +14,26 @@
 */
 package com.ericsson.eiffel.remrem.generate.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-@Profile("integration-test")
+/**
+ * This class is used to disable the ldap authentication based on property
+ * activedirectory.generate.enabled=false in property file. By default this class
+ * will execute.
+ *
+ */
+@Profile("!integration-test")
+@ConditionalOnProperty(value = "activedirectory.generate.enabled", havingValue = "false", matchIfMissing = true)
 @Configuration
 @EnableWebSecurity
-public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                    .withUser("user")
-                    .password("secret")
-                    .roles("USER");
-    }
-
+public class DisabledSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                    .anyRequest()
-                    .authenticated()
-                    .and()
-                .httpBasic()
-                    .and()
-                .csrf()
-                    .disable();
+        http.authorizeRequests().anyRequest().permitAll().and().csrf().disable();
     }
 }

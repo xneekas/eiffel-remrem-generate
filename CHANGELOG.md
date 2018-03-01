@@ -1,4 +1,18 @@
 
+## 0.9.6
+- Added swagger for generate service
+- Added more verifications for generate service
+- Added presentation in html for all GET endpoints
+- Changed year in copyright headers from 2017 to 2018
+
+## 0.9.5
+- CLI changed to spring boot application and added logback support to remrem generate
+
+## 0.9.4
+- Moved ldap related functionality from shared
+- Added functionality to disable the Remrem Generate Authentication.
+- Uplifted remrem-semantics version to 0.3.7
+
 ## 0.9.3
 - Added endpoint to get event templates
 - Uplifted remrem-semantics to 0.3.5

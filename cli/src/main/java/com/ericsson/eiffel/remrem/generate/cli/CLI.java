@@ -1,5 +1,5 @@
 /*
-    Copyright 2017 Ericsson AB.
+    Copyright 2018 Ericsson AB.
     For a full list of individual contributors, please see the commit history.
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -21,17 +21,15 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 import com.ericsson.eiffel.remrem.generate.config.PropertiesConfig;
 import com.ericsson.eiffel.remrem.protocol.MsgService;
@@ -52,7 +50,8 @@ import ch.qos.logback.classic.Logger;
  * @author evasiba
  *
  */
-@Component
+@SpringBootApplication
+@ComponentScan(basePackages = "com.ericsson.eiffel.remrem")
 public class CLI implements CommandLineRunner {
 	
     @Autowired
@@ -223,8 +222,12 @@ public class CLI implements CommandLineRunner {
     }
     
     public static void main(String[] args) throws Exception {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("config.xml");
-        CLI cli = ctx.getBean(CLI.class);
-        cli.run(args);
+		SpringApplication application = new SpringApplication(CLI.class);
+		application.addInitializers(new SpringLoggingInitializer());
+		application.setBannerMode(Banner.Mode.OFF);
+		application.setLogStartupInfo(false);
+		application.setWebEnvironment(false);
+		CLIOptions.parse(args);
+		application.run(args);
     }
 }
